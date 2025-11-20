@@ -165,8 +165,13 @@ app.use("/api", apiTestRoutes);
 */
 app.get("/setup", async (req, res) => {
   try {
-    const fixDatabase = (await import("../fix-database.js")).default;
-    await fixDatabase();
+    const fixDatabaseModule = await import("../fix-database.js");
+    const fixDatabase = fixDatabaseModule.default || fixDatabaseModule;
+    if (typeof fixDatabase !== 'function') {
+      throw new Error('fixDatabase is not a function. Received: ' + typeof fixDatabase);
+    }
+    // Don't close the pool when called from route handler
+    await fixDatabase({ closePool: false });
 
     res.json({
       success: true,

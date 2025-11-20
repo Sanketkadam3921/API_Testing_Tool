@@ -10,7 +10,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-async function fixDatabase() {
+async function fixDatabase(options = {}) {
+  const { closePool = true } = options;
   try {
     console.log("🔧 Fixing database schema...\n");
 
@@ -111,11 +112,64 @@ async function fixDatabase() {
         `);
     console.log("✅ Created/verified metrics table");
 
+    // Create collections table
+    await pool.query(`
+            CREATE TABLE IF NOT EXISTS "collections" (
+                "id" TEXT NOT NULL,
+                "name" TEXT NOT NULL,
+                "description" TEXT,
+                "user_id" TEXT NOT NULL,
+                "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT "collections_pkey" PRIMARY KEY ("id")
+            );
+        `);
+    console.log("✅ Created/verified collections table");
+
+    // Create folders table
+    await pool.query(`
+            CREATE TABLE IF NOT EXISTS "folders" (
+                "id" TEXT NOT NULL,
+                "name" TEXT NOT NULL,
+                "description" TEXT,
+                "collection_id" TEXT NOT NULL,
+                "parent_id" TEXT,
+                "order" INTEGER NOT NULL DEFAULT 0,
+                "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT "folders_pkey" PRIMARY KEY ("id")
+            );
+        `);
+    console.log("✅ Created/verified folders table");
+
+    // Create requests table
+    await pool.query(`
+            CREATE TABLE IF NOT EXISTS "requests" (
+                "id" TEXT NOT NULL,
+                "name" TEXT NOT NULL,
+                "method" TEXT NOT NULL DEFAULT 'GET',
+                "url" TEXT NOT NULL,
+                "headers" JSONB NOT NULL DEFAULT '[]',
+                "body" TEXT DEFAULT '',
+                "params" JSONB NOT NULL DEFAULT '[]',
+                "description" TEXT,
+                "collection_id" TEXT,
+                "folder_id" TEXT,
+                "order" INTEGER NOT NULL DEFAULT 0,
+                "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                CONSTRAINT "requests_pkey" PRIMARY KEY ("id")
+            );
+        `);
+    console.log("✅ Created/verified requests table");
+
     // Fix existing data - create default user if collections exist with invalid user_id
     console.log("\n🔧 Fixing existing data...");
-    const collectionsCheck = await pool.query(
-      "SELECT DISTINCT user_id FROM collections WHERE user_id NOT IN (SELECT id FROM users)"
-    );
+    // Check if collections table has any rows with invalid user_id
+    try {
+      const collectionsCheck = await pool.query(
+        "SELECT DISTINCT user_id FROM collections WHERE user_id NOT IN (SELECT id FROM users)"
+      );
     if (collectionsCheck.rows.length > 0) {
       const defaultUserId = "default-user-id";
       const defaultUserEmail = "default@apitesting.local";
@@ -147,6 +201,13 @@ async function fixDatabase() {
         [defaultUserId]
       );
       console.log("✅ Updated collections to use default user");
+    } catch (error) {
+      // If collections table doesn't exist or query fails, skip this step
+      if (error.code === '42P01') {
+        console.log("ℹ️  Collections table doesn't exist yet, skipping data fix");
+      } else {
+        throw error;
+      }
     }
 
     // Add foreign keys if they don't exist
@@ -248,6 +309,70 @@ async function fixDatabase() {
         `);
     console.log("✅ Added metrics -> monitors foreign key");
 
+    // Folders -> Collections
+    await pool.query(`
+            DO $$ 
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint 
+                    WHERE conname = 'folders_collection_id_fkey'
+                ) THEN
+                    ALTER TABLE "folders" 
+                    ADD CONSTRAINT "folders_collection_id_fkey" 
+                    FOREIGN KEY ("collection_id") REFERENCES "collections"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+                END IF;
+            END $$;
+        `);
+    console.log("✅ Added folders -> collections foreign key");
+
+    // Folders -> Folders (self-reference for parent_id)
+    await pool.query(`
+            DO $$ 
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint 
+                    WHERE conname = 'folders_parent_id_fkey'
+                ) THEN
+                    ALTER TABLE "folders" 
+                    ADD CONSTRAINT "folders_parent_id_fkey" 
+                    FOREIGN KEY ("parent_id") REFERENCES "folders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+                END IF;
+            END $$;
+        `);
+    console.log("✅ Added folders -> folders foreign key");
+
+    // Requests -> Collections
+    await pool.query(`
+            DO $$ 
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint 
+                    WHERE conname = 'requests_collection_id_fkey'
+                ) THEN
+                    ALTER TABLE "requests" 
+                    ADD CONSTRAINT "requests_collection_id_fkey" 
+                    FOREIGN KEY ("collection_id") REFERENCES "collections"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+                END IF;
+            END $$;
+        `);
+    console.log("✅ Added requests -> collections foreign key");
+
+    // Requests -> Folders
+    await pool.query(`
+            DO $$ 
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint 
+                    WHERE conname = 'requests_folder_id_fkey'
+                ) THEN
+                    ALTER TABLE "requests" 
+                    ADD CONSTRAINT "requests_folder_id_fkey" 
+                    FOREIGN KEY ("folder_id") REFERENCES "folders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+                END IF;
+            END $$;
+        `);
+    console.log("✅ Added requests -> folders foreign key");
+
     // Create indexes
     console.log("\n📊 Creating indexes...");
 
@@ -281,12 +406,27 @@ async function fixDatabase() {
     await pool.query(`
             CREATE INDEX IF NOT EXISTS "metrics_created_at_idx" ON "metrics"("created_at");
         `);
+    await pool.query(`
+            CREATE INDEX IF NOT EXISTS "collections_user_id_idx" ON "collections"("user_id");
+        `);
+    await pool.query(`
+            CREATE INDEX IF NOT EXISTS "folders_collection_id_idx" ON "folders"("collection_id");
+        `);
+    await pool.query(`
+            CREATE INDEX IF NOT EXISTS "folders_parent_id_idx" ON "folders"("parent_id");
+        `);
+    await pool.query(`
+            CREATE INDEX IF NOT EXISTS "requests_collection_id_idx" ON "requests"("collection_id");
+        `);
+    await pool.query(`
+            CREATE INDEX IF NOT EXISTS "requests_folder_id_idx" ON "requests"("folder_id");
+        `);
     console.log("✅ Created all indexes");
 
     console.log("\n🎉 Database schema fixed successfully!");
     console.log("\n📋 Summary:");
     console.log(
-      "   - Created missing tables: users, tests, monitors, alerts, metrics"
+      "   - Created missing tables: users, tests, monitors, alerts, metrics, collections, folders, requests"
     );
     console.log("   - Added foreign key constraints");
     console.log("   - Created necessary indexes");
@@ -294,11 +434,28 @@ async function fixDatabase() {
   } catch (error) {
     console.error("❌ Error fixing database:", error.message);
     console.error(error);
-    process.exit(1);
+    if (closePool) {
+      await pool.end();
+    }
+    throw error; // Re-throw so the caller can handle it
   } finally {
-    await pool.end();
+    if (closePool) {
+      await pool.end();
+    }
   }
 }
 
-// Run the fix
+// Run the fix if called directly (not imported)
+if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('fix-database.js')) {
+  fixDatabase({ closePool: true })
+    .then(() => {
+      console.log("\n✅ Database setup complete!");
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error("\n❌ Database setup failed:", error);
+      process.exit(1);
+    });
+}
+
 export default fixDatabase;

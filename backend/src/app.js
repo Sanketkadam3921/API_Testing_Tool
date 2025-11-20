@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import helmet from "helmet";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import statusMonitor from "express-status-monitor";
@@ -26,112 +25,122 @@ dotenv.config();
 
 const app = express();
 
-// CORS configuration - MUST be first middleware to handle preflight requests
-// Allow all origins for development
-app.use(cors({
+// CORS configuration
+app.use(
+  cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps, Postman, etc.)
-        if (!origin) return callback(null, true);
-        
-        const allowedOrigins = [
-            'http://localhost:5173',
-            'http://localhost:5174',
-            'http://localhost:3000',
-            'http://localhost:3001',
-            'http://127.0.0.1:5173',
-            'http://127.0.0.1:5174',
-            'http://127.0.0.1:3000',
-            'http://127.0.0.1:3001',
-        ];
-        
-        // In development, allow all origins
-        if (process.env.NODE_ENV === 'development' || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:5174",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001",
+        "https://*.vercel.app",
+      ];
+
+      if (
+        process.env.NODE_ENV === "development" ||
+        allowedOrigins.indexOf(origin) !== -1
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With', 'Origin', 'X-Auth-Token'],
-    exposedHeaders: ['Content-Length', 'Content-Type'],
-    credentials: true, // Allow credentials for JWT tokens
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "X-Requested-With",
+      "Origin",
+      "X-Auth-Token",
+    ],
+    exposedHeaders: ["Content-Length", "Content-Type"],
+    credentials: true,
     preflightContinue: false,
-    optionsSuccessStatus: 204
-}));
+    optionsSuccessStatus: 204,
+  })
+);
 
-// Explicit OPTIONS handler for preflight requests (backup)
-app.options('*', cors());
+// Explicit OPTIONS handler
+app.options("*", cors());
 
-// Security middleware - helmet disabled to avoid CORS/403 issues
-// app.use(helmet());
+// Compression
 app.use(compression());
 
-// Rate limiting - Increased limits for development
+// Rate limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 1000, // limit each IP to 1000 requests per windowMs (increased for development)
-    message: {
-        success: false,
-        error: 'Too many requests from this IP, please try again later.',
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  message: {
+    success: false,
+    error: "Too many requests from this IP, please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
+app.use("/api/", limiter);
 
-app.use('/api/', limiter);
-
-// Status monitor dashboard
-app.use(statusMonitor({
-    title: 'ApexAPI Monitor',
-    path: '/status',
+// System status dashboard
+app.use(
+  statusMonitor({
+    title: "ApexAPI Monitor",
+    path: "/status",
     spans: [
-        { interval: 1, retention: 60 },   // Keep data for 1 minute (1 second intervals)
-        { interval: 5, retention: 60 },     // Keep data for 5 minutes (5 second intervals)
-        { interval: 15, retention: 60 }    // Keep data for 15 minutes (15 second intervals)
+      { interval: 1, retention: 60 },
+      { interval: 5, retention: 60 },
+      { interval: 15, retention: 60 },
     ],
     chartVisibility: {
-        cpu: true,
-        mem: true,
-        load: true,
-        heap: true,
-        eventLoop: true,
-        responseTime: true,
-        rps: true,
-        statusCodes: true
+      cpu: true,
+      mem: true,
+      load: true,
+      heap: true,
+      eventLoop: true,
+      responseTime: true,
+      rps: true,
+      statusCodes: true,
     },
     healthChecks: [
-        {
-            protocol: 'http',
-            host: 'localhost',
-            path: '/health',
-            port: process.env.PORT || 3001
-        }
-    ]
-}));
+      {
+        protocol: "http",
+        host: "localhost",
+        path: "/health",
+        port: process.env.PORT || 3001,
+      },
+    ],
+  })
+);
 
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Cache middleware for static/dynamic content
+// Cache middleware
 app.use(cacheMiddleware());
 
 // Logging middleware
 app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.path}`, {
-        ip: req.ip,
-        userAgent: req.get('User-Agent'),
-    });
-    next();
+  logger.info(`${req.method} ${req.path}`, {
+    ip: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+  next();
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'ApexAPI is running',
-        timestamp: new Date().toISOString(),
-        version: '1.0.0',
-    });
+// Health check
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "ApexAPI is running",
+    timestamp: new Date().toISOString(),
+    version: "1.0.0",
+  });
 });
 
 // API routes
@@ -147,16 +156,41 @@ app.use("/api/batch", batchRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api", apiTestRoutes);
 
-// 404 handler
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: 'Route not found',
-        path: req.originalUrl,
+/*  
+=====================================================
+ TEMPORARY ROUTE: /setup  
+ RUNS fix-database.js ONCE TO CREATE TABLES ON RENDER 
+ REMOVE AFTER SUCCESS 
+=====================================================
+*/
+app.get("/setup", async (req, res) => {
+  try {
+    const fixDatabase = (await import("../fix-database.js")).default;
+    await fixDatabase();
+
+    res.json({
+      success: true,
+      message: "Database initialized",
     });
+  } catch (err) {
+    console.error("Setup error:", err);
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
+  }
 });
 
-// Error handler
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+    path: req.originalUrl,
+  });
+});
+
+// Global error handler
 app.use(errorHandler);
 
 export default app;

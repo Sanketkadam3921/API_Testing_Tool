@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  collections Collection[]
+  tests       Test[]
+  monitors    Monitor[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String   @map("user_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folders  Folder[]
+  requests Request[]
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@map("collections")
+}
+
+model Folder {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  collectionId String   @map("collection_id")
+  parentId     String?  @map("parent_id")
+  order        Int      @default(0)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  parent     Folder?     @relation("FolderHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children   Folder[]    @relation("FolderHierarchy")
+  requests   Request[]
+
+  @@map("folders")
+}
+
+model Request {
+  id          String   @id @default(cuid())
+  name        String
+  method      String   @default("GET")
+  url         String
+  headers     Json     @default("[]")
+  body        String?  @default("")
+  params      Json     @default("[]")
+  description String?
+  collectionId String?  @map("collection_id")
+  folderId    String?  @map("folder_id")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  collection Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  folder     Folder?     @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  monitors   Monitor[]
+
+  @@index([collectionId])
+  @@index([folderId])
+  @@map("requests")
+}
+
+// Legacy Test model (keeping for backward compatibility)
+model Test {
+  id        String   @id @default(cuid())
+  name      String
+  method    String
+  url       String
+  headers   Json     @default("[]")
+  body      String?  @default("")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tests")
+}
+
+model Monitor {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  requestId   String   @map("request_id")
+  userId      String   @map("user_id")
+  intervalMin Int      @default(5) @map("interval_min")
+  thresholdMs Int      @default(500) @map("threshold_ms")
+  isActive    Boolean  @default(true) @map("is_active")
+  lastRun     DateTime? @map("last_run")
+  nextRun     DateTime? @map("next_run")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  request Request @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  alerts  Alert[]
+  metrics Metric[]
+
+  @@index([userId])
+  @@index([isActive, nextRun])
+  @@index([requestId])
+  @@map("monitors")
+}
+
+model Alert {
+  id        String   @id @default(cuid())
+  monitorId String   @map("monitor_id")
+  message   String
+  severity  String   @default("warning")
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@index([monitorId])
+  @@index([monitorId, isRead])
+  @@index([createdAt])
+  @@map("alerts")
+}
+
+model Metric {
+  id           String   @id @default(cuid())
+  monitorId    String   @map("monitor_id")
+  responseTime Int      @map("response_time")
+  statusCode   Int      @map("status_code")
+  success      Boolean
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  monitor Monitor @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+
+  @@index([monitorId])
+  @@index([monitorId, createdAt])
+  @@index([createdAt])
+  @@map("metrics")
+}

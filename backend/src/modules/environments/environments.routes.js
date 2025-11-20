@@ -1,11 +1,7 @@
 import { Router } from 'express';
 import { EnvironmentsController } from './environments.controller.js';
-import { authMiddleware } from '../../middleware/authMiddleware.js';
 
 const router = Router();
-
-// All environment routes require authentication
-router.use(authMiddleware);
 
 // Create environment
 router.post('/', EnvironmentsController.createEnvironment);

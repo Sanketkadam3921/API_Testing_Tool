@@ -94,7 +94,7 @@ const UptimeDashboard = () => {
 
     const loadMonitors = async () => {
         try {
-            const response = await apiService.get('/api/monitors');
+            const response = await apiService.get('/api/monitors?user_id=default-user-id');
             if (response.success && response.monitors) {
                 setMonitors(response.monitors);
                 if (response.monitors.length > 0 && !selectedMonitor) {
@@ -124,7 +124,7 @@ const UptimeDashboard = () => {
             }
 
             // Load alerts
-            const alertsResponse = await apiService.get(`/api/alerts?monitor_id=${monitorId}`);
+            const alertsResponse = await apiService.get(`/api/alerts?monitor_id=${monitorId}&user_id=default-user-id`);
             if (alertsResponse.success) {
                 setAlerts(alertsResponse.alerts || []);
             }

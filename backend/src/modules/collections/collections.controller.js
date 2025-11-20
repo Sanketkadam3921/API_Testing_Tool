@@ -5,10 +5,8 @@ export const CollectionsController = {
     createCollection: async (req, res, next) => {
         try {
             const { name, description } = req.body;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.body.user_id || await getDefaultUserId();
 
             if (!name || name.trim() === '') {
                 return res.status(400).json({
@@ -34,10 +32,8 @@ export const CollectionsController = {
 
     getCollections: async (req, res, next) => {
         try {
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.query.user_id || await getDefaultUserId();
             const collections = await CollectionsService.getCollectionsByUser(userId);
 
             res.status(200).json({
@@ -52,10 +48,7 @@ export const CollectionsController = {
     getCollection: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const userId = req.query.user_id || 'default-user-id';
 
             const collection = await CollectionsService.getCollectionById(id, userId);
             if (!collection) {
@@ -77,10 +70,7 @@ export const CollectionsController = {
     updateCollection: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const userId = req.body.user_id || 'default-user-id';
             const updates = req.body;
 
             const collection = await CollectionsService.updateCollection(id, userId, updates);
@@ -103,10 +93,8 @@ export const CollectionsController = {
     deleteCollection: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.query.user_id || await getDefaultUserId();
 
             // Verify collection exists before attempting deletion
             const existingCollection = await CollectionsService.getCollectionById(id, userId);

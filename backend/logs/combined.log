@@ -10724,3 +10724,16 @@
 {"ip":"::1","level":"info","message":"GET /api/alerts","service":"apexapi","timestamp":"2025-11-20 18:59:50","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"}
 {"ip":"::1","level":"info","message":"GET /api/alerts","service":"apexapi","timestamp":"2025-11-20 19:00:50","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"}
 {"level":"info","message":"Shutting down monitoring system...","service":"apexapi","timestamp":"2025-11-20 19:00:58"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-20 21:46:17"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-20 21:46:17"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-20 21:46:17"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-20 21:46:17"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-20 21:46:18"}
+{"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-20 21:46:18"}
+{"ip":"::1","level":"info","message":"GET /api/alerts","service":"apexapi","timestamp":"2025-11-20 21:46:50","userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
+{"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-20 21:49:44"}

@@ -1,11 +1,7 @@
 import { Router } from "express";
 import { CollectionsController } from "./collections.controller.js";
-import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 const router = Router();
-
-// All collection routes require authentication
-router.use(authMiddleware);
 
 // Collections routes
 router.post("/", CollectionsController.createCollection);

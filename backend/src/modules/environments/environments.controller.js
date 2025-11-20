@@ -5,10 +5,8 @@ export const EnvironmentsController = {
     createEnvironment: async (req, res, next) => {
         try {
             const { name, variables } = req.body;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.body.user_id || await getDefaultUserId();
 
             if (!name || name.trim() === '') {
                 return res.status(400).json({
@@ -35,10 +33,8 @@ export const EnvironmentsController = {
     // Get environments
     getEnvironments: async (req, res, next) => {
         try {
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.query.user_id || await getDefaultUserId();
 
             const environments = await EnvironmentsService.getEnvironments(userId);
 
@@ -55,10 +51,8 @@ export const EnvironmentsController = {
     getEnvironment: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.query.user_id || await getDefaultUserId();
 
             const environment = await EnvironmentsService.getEnvironmentById(id, userId);
             
@@ -83,10 +77,8 @@ export const EnvironmentsController = {
         try {
             const { id } = req.params;
             const { name, variables } = req.body;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.body.user_id || await getDefaultUserId();
 
             const environment = await EnvironmentsService.updateEnvironment(id, userId, {
                 name,
@@ -113,10 +105,8 @@ export const EnvironmentsController = {
     deleteEnvironment: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const userId = req.user?.id;
-            if (!userId) {
-                return res.status(401).json({ success: false, message: "Unauthorized" });
-            }
+            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
+            const userId = req.query.user_id || await getDefaultUserId();
 
             const environment = await EnvironmentsService.deleteEnvironment(id, userId);
             

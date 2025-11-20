@@ -33,36 +33,43 @@ apiClient.interceptors.request.use(
     }
 );
 
-// Response interceptor - Handle token expiration and errors
+// Response interceptor - Handle token expiration
 apiClient.interceptors.response.use(
     (response) => {
         if (import.meta.env.DEV) {
-            console.log(`Response received:`, response.status, response.statusText);
+        console.log(`Response received:`, response.status, response.statusText);
         }
         return response;
     },
     (error) => {
         // Handle 401/403 errors (unauthorized/forbidden) - token expired or invalid
         if (error.response?.status === 401 || error.response?.status === 403) {
-            // Don't redirect if this is an auth endpoint (login/signup) - those can return 401 legitimately
-            const isAuthEndpoint = error.config?.url?.includes('/api/auth/login') || 
-                                  error.config?.url?.includes('/api/auth/register');
-            
-            if (!isAuthEndpoint) {
-                // Clear auth data
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('authUser');
-                
-                // Only redirect if we're not already on login/signup pages
-                // Use window.location.origin to ensure we stay on the frontend domain
-                const currentPath = window.location.pathname;
-                if (currentPath !== '/login' && currentPath !== '/signup' && currentPath !== '/') {
-                    // Use window.location.origin to redirect to frontend, not API
-                    window.location.href = `${window.location.origin}/login`;
-                }
+            // Clear auth data and redirect to login
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('authUser');
+            if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+                window.location.href = '/login';
             }
         }
         
+        // Always log errors, but format them nicely
+        const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
+        if (import.meta.env.DEV) {
+            console.error('Response error:', error.response?.status, errorMessage);
+        }
+        return Promise.reject(error);
+    }
+);
+
+// Response interceptor
+apiClient.interceptors.response.use(
+    (response) => {
+        if (import.meta.env.DEV) {
+        console.log(`Response received:`, response.status, response.statusText);
+        }
+        return response;
+    },
+    (error) => {
         // Always log errors, but format them nicely
         const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
         if (import.meta.env.DEV) {
@@ -175,7 +182,7 @@ export const apiService = {
     },
 
     async getCollections() {
-        const response = await apiClient.get('/api/collections');
+        const response = await apiClient.get('/api/collections?user_id=default-user-id');
         return response.data;
     },
 
@@ -190,7 +197,7 @@ export const apiService = {
     },
 
     async deleteCollection(id) {
-        const response = await apiClient.delete(`/api/collections/${id}`);
+        const response = await apiClient.delete(`/api/collections/${id}?user_id=default-user-id`);
         return response.data;
     },
 

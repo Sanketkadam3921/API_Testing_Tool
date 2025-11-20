@@ -27,14 +27,12 @@ import {
     FilterList,
     Refresh,
 } from '@mui/icons-material';
-import { useTheme } from '../context/ThemeContext';
 import { useApiStore } from '../store/apiStore';
 import { apiService } from '../services/apiService';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
 const HistoryPanel = () => {
-    const { isDarkMode: _isDarkMode } = useTheme();
     const { createNewTab, updateRequest } = useApiStore();
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);

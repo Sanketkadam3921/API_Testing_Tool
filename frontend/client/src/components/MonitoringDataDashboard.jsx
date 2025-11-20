@@ -56,7 +56,6 @@ import {
     Pie,
     Cell,
 } from 'recharts';
-import { useTheme } from '../context/ThemeContext';
 import { apiService } from '../services/apiService';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -70,7 +69,6 @@ const COLORS = {
 };
 
 const MonitoringDataDashboard = () => {
-    const { isDarkMode: _isDarkMode } = useTheme();
     const [monitors, setMonitors] = useState([]);
     const [selectedMonitor, setSelectedMonitor] = useState(null);
     const [metrics, setMetrics] = useState([]);

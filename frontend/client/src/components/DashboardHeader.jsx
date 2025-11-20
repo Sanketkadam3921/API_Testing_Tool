@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Box, AppBar, Toolbar, IconButton, Badge, Avatar, Typography } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Badge, Avatar, Typography, Menu, MenuItem } from '@mui/material';
 import {
     Search,
     LightMode,
     DarkMode,
     Notifications,
+    Logout,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { apiService } from '../services/apiService';
 
 const DashboardHeader = () => {
     const { isDarkMode, toggleTheme } = useTheme();
+    const { logout } = useAuth();
     const navigate = useNavigate();
     const [unreadAlertsCount, setUnreadAlertsCount] = useState(0);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
 
     // Fetch unread alerts count
     useEffect(() => {
@@ -44,6 +49,20 @@ const DashboardHeader = () => {
         const interval = setInterval(fetchAlerts, 30000);
         return () => clearInterval(interval);
     }, []);
+
+    const handleAvatarClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        logout();
+        handleMenuClose();
+        navigate('/');
+    };
 
     return (
         <AppBar
@@ -151,6 +170,7 @@ const DashboardHeader = () => {
                         {isDarkMode ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
                     </IconButton>
                     <Avatar
+                        onClick={handleAvatarClick}
                         sx={{
                             width: 32,
                             height: 32,
@@ -167,6 +187,40 @@ const DashboardHeader = () => {
                     >
                         U
                     </Avatar>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleMenuClose}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        PaperProps={{
+                            sx: {
+                                mt: 1,
+                                minWidth: 180,
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                borderRadius: '8px',
+                            },
+                        }}
+                    >
+                        <MenuItem
+                            onClick={handleLogout}
+                            sx={{
+                                color: '#ef4444',
+                                '&:hover': {
+                                    backgroundColor: 'rgba(239,68,68,0.1)',
+                                },
+                            }}
+                        >
+                            <Logout sx={{ mr: 1.5, fontSize: '1.2rem' }} />
+                            Logout
+                        </MenuItem>
+                    </Menu>
                 </Box>
             </Toolbar>
         </AppBar>

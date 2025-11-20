@@ -170,37 +170,38 @@ async function fixDatabase(options = {}) {
       const collectionsCheck = await pool.query(
         "SELECT DISTINCT user_id FROM collections WHERE user_id NOT IN (SELECT id FROM users)"
       );
-    if (collectionsCheck.rows.length > 0) {
-      const defaultUserId = "default-user-id";
-      const defaultUserEmail = "default@apitesting.local";
-      const defaultUserName = "Default User";
-      // Check if default user exists
-      const userCheck = await pool.query("SELECT id FROM users WHERE id = $1", [
-        defaultUserId,
-      ]);
-      if (userCheck.rows.length === 0) {
-        // Create default user with a dummy password hash
-        const bcrypt = await import("bcrypt");
-        const hashedPassword = await bcrypt.default.hash(
-          "default-password-not-for-production",
-          10
-        );
-        await pool.query(
-          `
+      if (collectionsCheck.rows.length > 0) {
+        const defaultUserId = "default-user-id";
+        const defaultUserEmail = "default@apitesting.local";
+        const defaultUserName = "Default User";
+        // Check if default user exists
+        const userCheck = await pool.query("SELECT id FROM users WHERE id = $1", [
+          defaultUserId,
+        ]);
+        if (userCheck.rows.length === 0) {
+          // Create default user with a dummy password hash
+          const bcrypt = await import("bcrypt");
+          const hashedPassword = await bcrypt.default.hash(
+            "default-password-not-for-production",
+            10
+          );
+          await pool.query(
+            `
                     INSERT INTO users (id, name, email, password, created_at, updated_at)
                     VALUES ($1, $2, $3, $4, NOW(), NOW())
                     ON CONFLICT (id) DO NOTHING
                 `,
-          [defaultUserId, defaultUserName, defaultUserEmail, hashedPassword]
+            [defaultUserId, defaultUserName, defaultUserEmail, hashedPassword]
+          );
+          console.log("✅ Created default user");
+        }
+        // Update collections to use default user
+        await pool.query(
+          "UPDATE collections SET user_id = $1 WHERE user_id NOT IN (SELECT id FROM users)",
+          [defaultUserId]
         );
-        console.log("✅ Created default user");
+        console.log("✅ Updated collections to use default user");
       }
-      // Update collections to use default user
-      await pool.query(
-        "UPDATE collections SET user_id = $1 WHERE user_id NOT IN (SELECT id FROM users)",
-        [defaultUserId]
-      );
-      console.log("✅ Updated collections to use default user");
     } catch (error) {
       // If collections table doesn't exist or query fails, skip this step
       if (error.code === '42P01') {

@@ -163,28 +163,28 @@ app.use("/api", apiTestRoutes);
  REMOVE AFTER SUCCESS 
 =====================================================
 */
-app.get("/setup", async (req, res) => {
-  try {
-    const fixDatabaseModule = await import("../fix-database.js");
-    const fixDatabase = fixDatabaseModule.default || fixDatabaseModule;
-    if (typeof fixDatabase !== 'function') {
-      throw new Error('fixDatabase is not a function. Received: ' + typeof fixDatabase);
-    }
-    // Don't close the pool when called from route handler
-    await fixDatabase({ closePool: false });
+// app.get("/setup", async (req, res) => {
+//   try {
+//     const fixDatabaseModule = await import("../fix-database.js");
+//     const fixDatabase = fixDatabaseModule.default || fixDatabaseModule;
+//     if (typeof fixDatabase !== 'function') {
+//       throw new Error('fixDatabase is not a function. Received: ' + typeof fixDatabase);
+//     }
+//     // Don't close the pool when called from route handler
+//     await fixDatabase({ closePool: false });
 
-    res.json({
-      success: true,
-      message: "Database initialized",
-    });
-  } catch (err) {
-    console.error("Setup error:", err);
-    res.status(500).json({
-      success: false,
-      error: err.message,
-    });
-  }
-});
+//     res.json({
+//       success: true,
+//       message: "Database initialized",
+//     });
+//   } catch (err) {
+//     console.error("Setup error:", err);
+//     res.status(500).json({
+//       success: false,
+//       error: err.message,
+//     });
+//   }
+// });
 
 // 404 handler
 app.use((req, res) => {

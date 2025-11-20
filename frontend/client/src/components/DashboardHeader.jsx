@@ -24,7 +24,7 @@ const DashboardHeader = () => {
     useEffect(() => {
         const fetchAlerts = async () => {
             try {
-                const response = await apiService.get('/api/alerts?user_id=default-user-id');
+                const response = await apiService.get('/api/alerts');
                 if (response.success && response.alerts) {
                     // Count unread alerts that indicate API crashes or failures
                     const crashAlerts = response.alerts.filter(alert => 

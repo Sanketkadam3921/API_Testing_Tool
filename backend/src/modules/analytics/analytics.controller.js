@@ -1,4 +1,14 @@
 import { AnalyticsService } from "./analytics.service.js";
+import { MonitorsService } from "../monitors/monitors.service.js";
+
+// Helper function to verify monitor ownership
+const verifyMonitorOwnership = async (monitorId, userId) => {
+    const monitor = await MonitorsService.getMonitorById(monitorId, userId);
+    if (!monitor) {
+        throw new Error("Monitor not found");
+    }
+    return true;
+};
 
 export const AnalyticsController = {
     /**
@@ -6,7 +16,12 @@ export const AnalyticsController = {
      */
     getPercentiles: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { start_date, end_date } = req.query;
 
             const percentiles = await AnalyticsService.getResponseTimePercentiles(
@@ -17,6 +32,9 @@ export const AnalyticsController = {
 
             res.status(200).json({ success: true, percentiles });
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     },
@@ -26,7 +44,12 @@ export const AnalyticsController = {
      */
     getErrorRateTrend: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { start_date, end_date, interval = 'hour' } = req.query;
 
             const trend = await AnalyticsService.getErrorRateTrend(
@@ -38,6 +61,9 @@ export const AnalyticsController = {
 
             res.status(200).json({ success: true, trend });
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     },
@@ -47,7 +73,12 @@ export const AnalyticsController = {
      */
     getSuccessRateTrend: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { start_date, end_date, interval = 'hour' } = req.query;
 
             const trend = await AnalyticsService.getSuccessRateTrend(
@@ -59,6 +90,9 @@ export const AnalyticsController = {
 
             res.status(200).json({ success: true, trend });
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     },
@@ -68,7 +102,12 @@ export const AnalyticsController = {
      */
     getComprehensive: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { start_date, end_date } = req.query;
 
             const analytics = await AnalyticsService.getComprehensiveAnalytics(
@@ -79,6 +118,9 @@ export const AnalyticsController = {
 
             res.status(200).json({ success: true, analytics });
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     },
@@ -88,7 +130,12 @@ export const AnalyticsController = {
      */
     getUptime: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { start_date, end_date } = req.query;
 
             const stats = await AnalyticsService.getUptimeStats(
@@ -99,6 +146,9 @@ export const AnalyticsController = {
 
             res.status(200).json({ success: true, stats });
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     },
@@ -108,7 +158,12 @@ export const AnalyticsController = {
      */
     exportData: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { start_date, end_date, format = 'json' } = req.query;
 
             const data = await AnalyticsService.getExportData(
@@ -131,6 +186,9 @@ export const AnalyticsController = {
                 res.status(200).json({ success: true, data });
             }
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     },
@@ -140,13 +198,21 @@ export const AnalyticsController = {
      */
     getRealTime: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { monitor_id } = req.params;
+            await verifyMonitorOwnership(monitor_id, userId);
             const { minutes = 60 } = req.query;
 
             const data = await AnalyticsService.getRealTimeData(monitor_id, parseInt(minutes));
 
             res.status(200).json({ success: true, data });
         } catch (err) {
+            if (err.message === "Monitor not found") {
+                return res.status(404).json({ success: false, message: err.message });
+            }
             next(err);
         }
     }

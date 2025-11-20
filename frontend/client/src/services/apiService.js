@@ -182,7 +182,7 @@ export const apiService = {
     },
 
     async getCollections() {
-        const response = await apiClient.get('/api/collections?user_id=default-user-id');
+        const response = await apiClient.get('/api/collections');
         return response.data;
     },
 
@@ -197,7 +197,7 @@ export const apiService = {
     },
 
     async deleteCollection(id) {
-        const response = await apiClient.delete(`/api/collections/${id}?user_id=default-user-id`);
+        const response = await apiClient.delete(`/api/collections/${id}`);
         return response.data;
     },
 

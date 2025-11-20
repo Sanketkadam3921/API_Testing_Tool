@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { MonitorsController } from "./monitors.controller.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 const router = Router();
+
+// All monitor routes require authentication
+router.use(authMiddleware);
 
 // Monitor CRUD operations
 router.post("/", MonitorsController.create);

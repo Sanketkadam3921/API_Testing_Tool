@@ -84,7 +84,7 @@ const MonitoringDashboard = () => {
 
     const loadMonitors = async () => {
         try {
-            const response = await apiService.get('/api/monitors?user_id=default-user-id');
+            const response = await apiService.get('/api/monitors');
             if (response.success) {
                 setMonitors(response.monitors || []);
             }
@@ -96,7 +96,7 @@ const MonitoringDashboard = () => {
 
     const loadStats = async () => {
         try {
-            const response = await apiService.get('/api/monitors/stats?user_id=default-user-id');
+            const response = await apiService.get('/api/monitors/stats');
             if (response.success) {
                 setStats(response.stats || {});
             } else {
@@ -112,7 +112,7 @@ const MonitoringDashboard = () => {
     const loadRequests = async () => {
         try {
             // Fetch all collections first, then aggregate their requests
-            const collectionsResp = await apiService.get('/api/collections?user_id=default-user-id');
+            const collectionsResp = await apiService.get('/api/collections');
             if (!collectionsResp.success || !Array.isArray(collectionsResp.collections)) {
                 console.log('No collections found or invalid response');
                 setRequests([]);

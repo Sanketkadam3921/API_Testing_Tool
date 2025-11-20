@@ -3,8 +3,11 @@ import { TestsService } from "./tests.service.js";
 export const TestsController = {
     create: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const { name, method, url, headers, body } = req.body;
-            const userId = req.body.user_id || 'default-user-id';
             const test = await TestsService.createTest(
                 userId,
                 name,
@@ -21,7 +24,10 @@ export const TestsController = {
 
     getAll: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const tests = await TestsService.getAllTests(userId);
             res.status(200).json({ success: true, tests });
         } catch (err) {
@@ -31,7 +37,10 @@ export const TestsController = {
 
     getById: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const test = await TestsService.getTestById(req.params.id, userId);
             if (!test) return res.status(404).json({ success: false, message: "Test not found" });
             res.status(200).json({ success: true, test });
@@ -42,7 +51,10 @@ export const TestsController = {
 
     update: async (req, res, next) => {
         try {
-            const userId = req.body.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const test = await TestsService.updateTest(
                 req.params.id,
                 userId,
@@ -57,7 +69,10 @@ export const TestsController = {
 
     remove: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const test = await TestsService.deleteTest(req.params.id, userId);
             if (!test) return res.status(404).json({ success: false, message: "Test not found" });
             res.status(200).json({ success: true, message: "Test deleted" });
@@ -68,7 +83,10 @@ export const TestsController = {
 
     run: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const result = await TestsService.runTest(req.params.id, userId);
             res.status(200).json({ success: true, ...result });
         } catch (err) {

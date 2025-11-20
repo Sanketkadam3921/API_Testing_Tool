@@ -100,7 +100,7 @@ const MonitoringDataDashboard = () => {
 
     const loadMonitors = async () => {
         try {
-            const response = await apiService.get('/api/monitors?user_id=default-user-id');
+            const response = await apiService.get('/api/monitors');
             if (response.success && response.monitors) {
                 setMonitors(response.monitors);
                 if (response.monitors.length > 0 && !selectedMonitor) {
@@ -109,7 +109,7 @@ const MonitoringDataDashboard = () => {
             }
             
             // Load overall stats
-            const statsResponse = await apiService.get('/api/monitors/stats?user_id=default-user-id');
+            const statsResponse = await apiService.get('/api/monitors/stats');
             if (statsResponse.success) {
                 setOverallStats(statsResponse.stats);
             }

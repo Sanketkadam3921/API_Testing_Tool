@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { AnalyticsController } from "./analytics.controller.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 const router = Router();
+
+// All analytics routes require authentication
+router.use(authMiddleware);
 
 // Analytics routes
 router.get("/monitors/:monitor_id/percentiles", AnalyticsController.getPercentiles);

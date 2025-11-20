@@ -25,7 +25,15 @@ export const AlertsService = {
         return result.rows;
     },
 
-    getAlertsByMonitor: async (monitorId) => {
+    getAlertsByMonitor: async (monitorId, userId) => {
+        // Verify monitor belongs to user before getting alerts
+        const monitorCheck = await pool.query(
+            'SELECT id FROM monitors WHERE id = $1 AND user_id = $2',
+            [monitorId, userId]
+        );
+        if (monitorCheck.rows.length === 0) {
+            return [];
+        }
         const result = await pool.query(AlertsQueries.getAlertsByMonitor, [monitorId]);
         return result.rows;
     },

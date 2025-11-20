@@ -58,7 +58,7 @@ const MonitoringPanel = () => {
 
     const loadMonitors = async () => {
         try {
-            const response = await apiService.get('/api/monitors?user_id=default-user-id');
+            const response = await apiService.get('/api/monitors');
             if (response.success) {
                 setMonitors(response.monitors || []);
             }
@@ -69,7 +69,7 @@ const MonitoringPanel = () => {
 
     const loadRequests = async () => {
         try {
-            const collectionsResp = await apiService.get('/api/collections?user_id=default-user-id');
+            const collectionsResp = await apiService.get('/api/collections');
             if (!collectionsResp.success || !Array.isArray(collectionsResp.collections)) {
                 setRequests([]);
                 return;

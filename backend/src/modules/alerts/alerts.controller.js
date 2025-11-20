@@ -3,10 +3,13 @@ import { AlertsService } from "./alerts.service.js";
 export const AlertsController = {
     getAll: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const monitorId = req.query.monitor_id;
             const alerts = monitorId 
-                ? await AlertsService.getAlertsByMonitor(monitorId)
+                ? await AlertsService.getAlertsByMonitor(monitorId, userId)
                 : await AlertsService.getAlerts(userId);
             res.status(200).json({ success: true, alerts });
         } catch (err) {

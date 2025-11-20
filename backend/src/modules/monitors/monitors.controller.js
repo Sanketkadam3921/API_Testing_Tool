@@ -30,10 +30,12 @@ export const MonitorsController = {
                 }
 
                 const { CollectionsService } = await import('../collections/collections.service.js');
-                const { getDefaultUserId } = await import('../../utils/defaultUser.js');
 
-                // Ensure default user exists
-                const userId = req.body.user_id || await getDefaultUserId();
+                // Use authenticated user ID
+                const userId = req.user?.id;
+                if (!userId) {
+                    return res.status(401).json({ success: false, message: "Unauthorized" });
+                }
                 let tempCollection;
                 
                 try {
@@ -107,9 +109,11 @@ export const MonitorsController = {
                 finalRequestId = newRequest.id;
             }
 
-            // Ensure default user exists for monitor creation
-            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
-            const userId = req.body.user_id || await getDefaultUserId();
+            // Use authenticated user ID
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const monitor = await MonitorsService.createMonitor(
                 name || 'Untitled Monitor',
                 description,
@@ -127,7 +131,10 @@ export const MonitorsController = {
 
     getAll: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const monitors = await MonitorsService.getAllMonitors(userId);
             res.status(200).json({ success: true, monitors });
         } catch (err) {
@@ -137,7 +144,10 @@ export const MonitorsController = {
 
     getById: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const monitor = await MonitorsService.getMonitorById(
                 req.params.id,
                 userId
@@ -156,17 +166,23 @@ export const MonitorsController = {
 
     updateStatus: async (req, res, next) => {
         try {
-            const { is_active } = req.body;
-            const monitor = await MonitorsService.updateMonitorStatus(
-                req.params.id,
-                is_active
-            );
-            if (!monitor) {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
+            // Verify monitor belongs to user before updating
+            const existingMonitor = await MonitorsService.getMonitorById(req.params.id, userId);
+            if (!existingMonitor) {
                 return res.status(404).json({
                     success: false,
                     message: "Monitor not found"
                 });
             }
+            const { is_active } = req.body;
+            const monitor = await MonitorsService.updateMonitorStatus(
+                req.params.id,
+                is_active
+            );
             res.status(200).json({
                 success: true,
                 message: `Monitor ${is_active ? 'started' : 'stopped'} successfully`,
@@ -179,13 +195,19 @@ export const MonitorsController = {
 
     delete: async (req, res, next) => {
         try {
-            const monitor = await MonitorsService.deleteMonitor(req.params.id);
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
+            // Verify monitor belongs to user before deleting
+            const monitor = await MonitorsService.getMonitorById(req.params.id, userId);
             if (!monitor) {
                 return res.status(404).json({
                     success: false,
                     message: "Monitor not found"
                 });
             }
+            await MonitorsService.deleteMonitor(req.params.id);
             res.status(200).json({
                 success: true,
                 message: "Monitor deleted successfully"
@@ -197,7 +219,10 @@ export const MonitorsController = {
 
     getStats: async (req, res, next) => {
         try {
-            const userId = req.query.user_id || 'default-user-id';
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             const stats = await MonitorsService.getMonitorStats(userId);
             res.status(200).json({ success: true, stats });
         } catch (err) {
@@ -207,6 +232,18 @@ export const MonitorsController = {
 
     runTest: async (req, res, next) => {
         try {
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
+            // Verify monitor belongs to user before running test
+            const monitor = await MonitorsService.getMonitorById(req.params.id, userId);
+            if (!monitor) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Monitor not found"
+                });
+            }
             const result = await MonitorsService.runMonitorTest(req.params.id);
             res.status(200).json({ success: true, result });
         } catch (err) {

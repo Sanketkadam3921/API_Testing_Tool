@@ -4,8 +4,10 @@ export const HistoryController = {
     // Get user's request history
     getHistory: async (req, res, next) => {
         try {
-            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
-            const userId = req.query.user_id || await getDefaultUserId();
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             
             const options = {
                 limit: parseInt(req.query.limit) || 50,
@@ -35,8 +37,10 @@ export const HistoryController = {
     // Get history statistics
     getHistoryStats: async (req, res, next) => {
         try {
-            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
-            const userId = req.query.user_id || await getDefaultUserId();
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
             
             const options = {
                 startDate: req.query.start_date || null,
@@ -67,8 +71,10 @@ export const HistoryController = {
     getHistoryById: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
-            const userId = req.query.user_id || await getDefaultUserId();
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
 
             const historyItem = await HistoryService.getHistoryById(id, userId);
             
@@ -92,8 +98,10 @@ export const HistoryController = {
     deleteHistory: async (req, res, next) => {
         try {
             const { id } = req.params;
-            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
-            const userId = req.query.user_id || await getDefaultUserId();
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
 
             const deleted = await HistoryService.deleteHistory(id, userId);
             
@@ -116,8 +124,10 @@ export const HistoryController = {
     // Clear all history
     clearHistory: async (req, res, next) => {
         try {
-            const { getDefaultUserId } = await import('../../utils/defaultUser.js');
-            const userId = req.query.user_id || await getDefaultUserId();
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(401).json({ success: false, message: "Unauthorized" });
+            }
 
             const result = await HistoryService.clearHistory(userId);
             

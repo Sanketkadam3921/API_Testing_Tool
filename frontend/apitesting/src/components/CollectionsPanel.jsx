@@ -34,7 +34,6 @@ import {
   Api,
   ExpandMore,
 } from "@mui/icons-material";
-import { useTheme } from "../context/ThemeContext";
 import { useApiStore } from "../store/apiStore";
 import { apiService } from "../services/apiService";
 import { validateUrl } from "../utils/validators";
@@ -221,7 +220,7 @@ const CollectionsPanel = () => {
     ) {
       try {
         JSON.parse(newRequest.body);
-      } catch (_error) {
+      } catch {
         toast.error(
           "Body must be valid JSON format for POST/PUT/PATCH requests"
         );

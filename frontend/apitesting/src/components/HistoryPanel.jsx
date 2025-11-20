@@ -94,7 +94,7 @@ const HistoryPanel = () => {
                     toast.success(`Cleared ${response.deletedCount || 0} history items`);
                     setHistory([]);
                 }
-            } catch (_error) {
+            } catch {
                 toast.error('Failed to clear history');
             }
         }
@@ -107,7 +107,7 @@ const HistoryPanel = () => {
                 toast.success('History item deleted');
                 loadHistory();
             }
-        } catch (_error) {
+        } catch {
             toast.error('Failed to delete history item');
         }
     };

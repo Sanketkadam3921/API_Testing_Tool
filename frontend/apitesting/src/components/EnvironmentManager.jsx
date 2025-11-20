@@ -51,7 +51,7 @@ const EnvironmentManager = ({ open, onClose, onSelectEnvironment }) => {
             if (response.success) {
                 setEnvironments(response.environments || []);
             }
-        } catch (_error) {
+        } catch {
             toast.error('Failed to load environments');
         } finally {
             setLoading(false);
@@ -123,7 +123,7 @@ const EnvironmentManager = ({ open, onClose, onSelectEnvironment }) => {
                     toast.success('Environment deleted');
                     loadEnvironments();
                 }
-            } catch (_error) {
+            } catch {
                 toast.error('Failed to delete environment');
             }
         }

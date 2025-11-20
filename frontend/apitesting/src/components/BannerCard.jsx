@@ -6,8 +6,7 @@ const BannerCard = ({
     subtitle, 
     buttonText = 'Go now', 
     buttonAction,
-    gradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    imageUrl = null
+    gradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
 }) => {
     return (
         <Card

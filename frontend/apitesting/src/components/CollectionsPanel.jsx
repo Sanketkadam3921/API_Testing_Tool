@@ -41,7 +41,7 @@ import { validateUrl } from '../utils/validators';
 import toast from 'react-hot-toast';
 
 const CollectionsPanel = () => {
-    const { isDarkMode } = useTheme();
+    const { isDarkMode: _isDarkMode } = useTheme();
     const { createNewTab, updateRequest } = useApiStore();
     const [collections, setCollections] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -203,7 +203,7 @@ const CollectionsPanel = () => {
         if ((newRequest.method === 'POST' || newRequest.method === 'PUT' || newRequest.method === 'PATCH') && newRequest.body.trim()) {
             try {
                 JSON.parse(newRequest.body);
-            } catch (error) {
+            } catch (_error) {
                 toast.error('Body must be valid JSON format for POST/PUT/PATCH requests');
                 return;
             }

@@ -12,14 +12,14 @@ class ErrorBoundary extends React.Component {
         return { hasError: true };
     }
 
-    componentDidCatch(error, errorInfo) {
+    componentDidCatch(_error, _errorInfo) {
         this.setState({
-            error,
-            errorInfo,
+            error: _error,
+            errorInfo: _errorInfo,
         });
         // Log to console in development
         if (import.meta.env.DEV) {
-            console.error('ErrorBoundary caught an error:', error, errorInfo);
+            console.error('ErrorBoundary caught an error:', _error, _errorInfo);
         }
     }
 

@@ -15,7 +15,7 @@ import { useTheme } from '../context/ThemeContext';
 const DashboardSidebar = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { isDarkMode } = useTheme();
+    const { isDarkMode: _isDarkMode } = useTheme();
 
     const sidebarWidth = 280;
 

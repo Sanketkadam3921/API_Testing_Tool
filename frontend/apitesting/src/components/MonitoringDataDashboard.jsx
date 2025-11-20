@@ -70,7 +70,7 @@ const COLORS = {
 };
 
 const MonitoringDataDashboard = () => {
-    const { isDarkMode } = useTheme();
+    const { isDarkMode: _isDarkMode } = useTheme();
     const [monitors, setMonitors] = useState([]);
     const [selectedMonitor, setSelectedMonitor] = useState(null);
     const [metrics, setMetrics] = useState([]);

@@ -34,7 +34,7 @@ import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
 const HistoryPanel = () => {
-    const { isDarkMode } = useTheme();
+    const { isDarkMode: _isDarkMode } = useTheme();
     const { createNewTab, updateRequest } = useApiStore();
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -94,7 +94,7 @@ const HistoryPanel = () => {
                     toast.success(`Cleared ${response.deletedCount || 0} history items`);
                     setHistory([]);
                 }
-            } catch (error) {
+            } catch (_error) {
                 toast.error('Failed to clear history');
             }
         }
@@ -107,7 +107,7 @@ const HistoryPanel = () => {
                 toast.success('History item deleted');
                 loadHistory();
             }
-        } catch (error) {
+        } catch (_error) {
             toast.error('Failed to delete history item');
         }
     };

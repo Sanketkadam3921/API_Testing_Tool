@@ -168,7 +168,7 @@ const RequestEditor = ({ tabId }) => {
         if ((method === 'POST' || method === 'PUT' || method === 'PATCH') && body.trim()) {
             try {
                 JSON.parse(body);
-            } catch (error) {
+            } catch {
                 toast.error('Body must be valid JSON format for POST/PUT/PATCH requests');
                 return;
             }
@@ -216,7 +216,7 @@ const RequestEditor = ({ tabId }) => {
             if (body.trim()) {
                 try {
                     parsedBody = JSON.parse(body);
-                } catch (error) {
+                } catch {
                     toast.error('Invalid JSON format in body');
                     setLoading(false);
                     return;

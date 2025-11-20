@@ -111,7 +111,7 @@ const Home = () => {
             setLoginOpen(false);
             setLoginData({ email: "", password: "" });
             navigate("/dashboard");
-        } catch (err) {
+        } catch {
             setError("Login failed. Please try again.");
         } finally {
             setLoading(false);
@@ -157,7 +157,7 @@ const Home = () => {
             setSignupOpen(false);
             setSignupData({ name: "", email: "", password: "", confirmPassword: "" });
             navigate("/dashboard");
-        } catch (err) {
+        } catch {
             setError("Signup failed. Please try again.");
         } finally {
             setLoading(false);

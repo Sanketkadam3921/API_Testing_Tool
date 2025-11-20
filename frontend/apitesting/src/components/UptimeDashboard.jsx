@@ -51,7 +51,6 @@ import {
     Pie,
     Cell,
 } from 'recharts';
-import { useTheme } from '../context/ThemeContext';
 import { apiService } from '../services/apiService';
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
@@ -64,7 +63,6 @@ const COLORS = {
 };
 
 const UptimeDashboard = () => {
-    const { isDarkMode } = useTheme();
     const [selectedMonitor, setSelectedMonitor] = useState(null);
     const [monitors, setMonitors] = useState([]);
     const [metrics, setMetrics] = useState([]);

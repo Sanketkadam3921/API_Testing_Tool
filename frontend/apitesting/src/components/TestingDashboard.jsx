@@ -13,7 +13,6 @@ import {
     Add,
     PlayArrow,
 } from '@mui/icons-material';
-import { useTheme } from '../context/ThemeContext';
 import { useApiStore } from '../store/apiStore';
 import RequestEditor from './RequestEditor';
 import ResponseViewer from './ResponseViewer';
@@ -21,7 +20,6 @@ import CollectionsPanel from './CollectionsPanel';
 import BatchRunner from './BatchRunner';
 
 const TestingDashboard = () => {
-    const { isDarkMode } = useTheme();
     const { tabs, activeTabId, createNewTab, setActiveTab, closeTab } = useApiStore();
     const [tabValue, setTabValue] = React.useState(0);
     const [batchRunnerOpen, setBatchRunnerOpen] = React.useState(false);

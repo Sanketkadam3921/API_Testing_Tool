@@ -49,12 +49,12 @@ export const validateUrl = (url) => {
         }
 
         // Check for invalid characters in path
-        if (urlObj.pathname && /[<>"{}|\\^`\[\]]/.test(urlObj.pathname)) {
+        if (urlObj.pathname && /[<>"{}|\\^`[\]]/.test(urlObj.pathname)) {
             return { valid: false, error: 'URL contains invalid characters' };
         }
 
         return { valid: true };
-    } catch (error) {
+    } catch {
         // If URL parsing fails, check if it's a relative path (for internal use)
         // But for API testing, we generally want absolute URLs
         if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('./')) {

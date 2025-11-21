@@ -426,7 +426,7 @@ const Home = () => {
                                         mb: 1,
                                     }}
                                 >
-                                    10K+
+                                    100+
                                 </Typography>
                                 <Typography variant="body1" sx={{ color: "#6b7280" }}>
                                     Active Users
@@ -443,7 +443,7 @@ const Home = () => {
                                         mb: 1,
                                     }}
                                 >
-                                    50K+
+                                    1K+
                                 </Typography>
                                 <Typography variant="body1" sx={{ color: "#6b7280" }}>
                                     API Requests
@@ -846,7 +846,7 @@ const Home = () => {
                                                 Trusted by Teams
                                             </Typography>
                                             <Typography variant="body2" sx={{ color: "#6b7280" }}>
-                                                Used by developers at startups and Fortune 500 companies
+                                                Built for developers, students, and teams
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -924,7 +924,7 @@ const Home = () => {
                             zIndex: 1,
                         }}
                     >
-                        Join thousands of developers who are already using ApexAPI to build and test their APIs.
+                        Start testing and monitoring your APIs with our comprehensive platform built for developers.
                     </Typography>
                     <Button
                         variant="contained"

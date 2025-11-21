@@ -1,7 +1,7 @@
 export const MonitorQueries = {
   createMonitor: `
-        INSERT INTO monitors (id, name, description, request_id, user_id, interval_min, threshold_ms, is_active, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+        INSERT INTO monitors (id, name, description, request_id, user_id, interval_min, threshold_ms, is_active, email_notifications_enabled, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, NOW(), NOW())
         RETURNING *
     `,
   getMonitorsByUser: `

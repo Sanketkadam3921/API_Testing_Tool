@@ -10737,3 +10737,59 @@
 {"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
 {"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
 {"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-20 21:49:44"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:35:44"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:35:44"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:35:44"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:35:44"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:35:44"}
+{"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-21 10:35:44"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:36:04"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:36:04"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:36:04"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:36:04"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:36:04"}
+{"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-21 10:36:04"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:36:29"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:36:29"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:36:29"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:36:29"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:36:29"}
+{"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-21 10:36:29"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:36:32"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:36:32"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:36:32"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:36:32"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:36:32"}
+{"level":"error","message":"Error checking pending email notifications:","service":"apexapi","timestamp":"2025-11-21 10:36:32"}
+{"level":"info","message":"Email sent successfully","messageId":"<3fd6388c-5a50-5ff7-e9a3-628e33a5a00a@gmail.com>","service":"apexapi","timestamp":"2025-11-21 10:47:16","to":"sanketkadam3921@gmail.com"}
+{"level":"info","message":"Email sent successfully","messageId":"<da2ef04d-cc81-614a-5d5e-2cd448cb47c7@gmail.com>","service":"apexapi","timestamp":"2025-11-21 10:47:36","to":"sanketkadam3921@gmail.com"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:47:48"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:47:48"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:47:48"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:47:48"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:47:48"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:49:53"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:49:53"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:49:53"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:49:53"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:49:53"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:50:02"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:50:02"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:50:02"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:50:02"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:50:02"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:50:03"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:50:03"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:50:03"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:50:03"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:50:03"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:50:52"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:50:52"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:50:52"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:50:52"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:50:52"}
+{"level":"info","message":"Server started on port 3001","service":"apexapi","timestamp":"2025-11-21 10:51:28"}
+{"level":"info","message":"Default user already exists","service":"apexapi","timestamp":"2025-11-21 10:51:28"}
+{"level":"info","message":"Default user ensured","service":"apexapi","timestamp":"2025-11-21 10:51:28"}
+{"level":"info","message":"Initializing monitoring system...","service":"apexapi","timestamp":"2025-11-21 10:51:28"}
+{"level":"info","message":"Initialized 0 active monitors","service":"apexapi","timestamp":"2025-11-21 10:51:29"}

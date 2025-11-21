@@ -5,7 +5,7 @@ import { AlertsService } from "../modules/alerts/alerts.service.js";
 import { EmailService } from "../services/emailService.js";
 import { logger } from "./logger.js";
 
-const FAILURE_THRESHOLD = 10; // Number of consecutive failures before email notification
+const FAILURE_THRESHOLD = 5; // Number of consecutive failures before email notification
 const EMAIL_COOLDOWN_HOURS = 24; // Don't send another email for 24 hours after last one
 
 const activeJobs = new Map();

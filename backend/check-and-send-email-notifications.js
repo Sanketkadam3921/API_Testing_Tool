@@ -6,7 +6,7 @@ import { logger } from './src/utils/logger.js';
 
 dotenv.config();
 
-const FAILURE_THRESHOLD = 10;
+const FAILURE_THRESHOLD = 5;
 const EMAIL_COOLDOWN_HOURS = 24;
 
 async function checkAndSendEmailNotifications() {

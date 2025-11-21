@@ -20,6 +20,7 @@ import environmentsRoutes from "./modules/environments/environments.routes.js";
 import batchRoutes from "./modules/batch/batch.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 import apiTestRoutes from "./routes/apiTest.routes.js";
+import testApiRoutes from "./routes/testApi.routes.js";
 
 dotenv.config();
 
@@ -155,6 +156,7 @@ app.use("/api/environments", environmentsRoutes);
 app.use("/api/batch", batchRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api", apiTestRoutes);
+app.use("/api", testApiRoutes);
 
 /*  
 =====================================================
